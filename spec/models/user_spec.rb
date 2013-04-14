@@ -55,6 +55,7 @@ describe User do
 	      end      
 	    end
 	end
+
 	describe "when email format is valid" do
 	    it "should be valid" do
 	      addresses = %w[user@foo.COM A_US-ER@f.b.org frst.lst@foo.jp a+b@baz.cn]
@@ -109,8 +110,25 @@ describe User do
 		    specify { user_for_invalid_password.should be_false }
 	    end
   	end
+
+
   describe "remember token" do
     before { @user.save }
     its(:remember_token) { should_not be_blank }
+  end
+
+    it { should respond_to(:admin) }
+  it { should respond_to(:authenticate) }
+
+  it { should be_valid }
+  it { should_not be_admin }
+
+  describe "with admin attribute set to 'true'" do
+    before do
+      @user.save!
+      @user.toggle!(:admin)
+    end
+
+    it { should be_admin }
   end
 end
