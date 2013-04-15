@@ -21,6 +21,7 @@ describe "Authentication" do
 
               it { should have_selector('title', text: 'Sign in') }
               it { should have_selector('div.alert.alert-error', text: 'Invalid') }
+              
 
               describe "after visiting another page" do
                 before { click_link "Home" }
@@ -28,7 +29,7 @@ describe "Authentication" do
               end
             end
 
-                    describe "with valid information" do
+               describe "with valid information" do
                 let(:user) { FactoryGirl.create(:user) }
                 before { sign_in user }
 
@@ -55,24 +56,27 @@ describe "Authentication" do
               describe "for non-signed-in users" do
                 let(:user) { FactoryGirl.create(:user) }
 
+                 it { should_not have_link('Profile',  href: user_path(user)) }
+                 it { should_not have_link('Settings', href: edit_user_path(user)) }
+
                 describe "in the Users controller" do
 
 
-                                                  describe "visiting the edit page" do
-                                                    before { visit edit_user_path(user) }
-                                                    it { should have_selector('title', text: 'Sign in') }
-                                                  end
+                      describe "visiting the edit page" do
+                        before { visit edit_user_path(user) }
+                        it { should have_selector('title', text: 'Sign in') }
+                      end
 
-                                                     describe "submitting to the update action" do
-                                                      before { put user_path(user) }
-                                                      specify { response.should redirect_to(signin_path) }
-                                                    end
+                     describe "submitting to the update action" do
+                      before { put user_path(user) }
+                      specify { response.should redirect_to(signin_path) }
+                    end
 
-                                                      describe "visiting the user index" do
-                                                            before { visit users_path }
-                                                            it { should have_selector('title', text: 'Sign in') }
-                                                          end
-                                                        end
+                      describe "visiting the user index" do
+                            before { visit users_path }
+                            it { should have_selector('title', text: 'Sign in') }
+                          end
+                        end
 
                 describe "when attempting to visit a protected page" do
                   before do
@@ -100,8 +104,6 @@ describe "Authentication" do
                 it { should_not have_selector('title', text: full_title('Edit user')) }
               end
 
-
-
               describe "submitting a PUT request to the Users#update action" do
                 before { put user_path(wrong_user) }
                 specify { response.should redirect_to(root_path) }
@@ -109,6 +111,7 @@ describe "Authentication" do
             end
           end
         end
+
     describe "as non-admin user" do
       let(:user) { FactoryGirl.create(:user) }
       let(:non_admin) { FactoryGirl.create(:user) }
