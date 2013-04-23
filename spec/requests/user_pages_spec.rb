@@ -56,13 +56,22 @@ describe "User pages" do
 
   #PART 3
 
-          describe "profile page" do
-          let(:user) { FactoryGirl.create(:user) }
-          before { visit user_path(user) }
+    describe "profile page" do
+    let(:user) { FactoryGirl.create(:user) }
+    let!(:m1) { FactoryGirl.create(:micropost, user: user, content: "Foo") }
+    let!(:m2) { FactoryGirl.create(:micropost, user: user, content: "Bar") }
 
-          it { should have_selector('h1',    text: user.name) }
-          it { should have_selector('title', text: user.name) }
-        end
+    before { visit user_path(user) }
+
+    it { should have_selector('h1',    text: user.name) }
+    it { should have_selector('title', text: user.name) }
+
+    describe "microposts" do
+      it { should have_content(m1.content) }
+      it { should have_content(m2.content) }
+      it { should have_content(user.microposts.count) }
+    end
+  end
 
           describe "signup page" do
             before { visit signup_path }
@@ -90,13 +99,15 @@ describe "User pages" do
                 it { should have_content('error') }
               end
 
-            describe "with valid information" do
-              before do
-                fill_in "Name",         with: "Example User"
-                fill_in "Email",        with: "user@example.com"
-                fill_in "Password",     with: "foobar"
-                fill_in "Confirm Password", with: "foobar"
-              end
+  describe "with valid information" do
+      before do
+        fill_in "Name", with: "Example User"
+        fill_in "Email", with: "user@example.com"
+        fill_in "Password", with: "foobar"
+        fill_in "Confirmation", with: "foobar"
+      end
+
+
 
                describe "after saving the user" do
                 before { click_button submit }
